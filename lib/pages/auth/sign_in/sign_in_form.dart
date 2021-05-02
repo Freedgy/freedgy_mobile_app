@@ -5,7 +5,7 @@ import 'package:mobile_app/config/constants.dart';
 import 'package:mobile_app/components/form_error.dart';
 import 'package:mobile_app/components/default_button.dart';
 import 'package:mobile_app/components/custom_surfix_icon.dart';
-import 'package:mobile_app/pages/auth/sign_up/sign_up.dart';
+import 'package:mobile_app/pages/auth/reset_pass/reset_pass.dart';
 
 class SignForm extends StatefulWidget {
   @override
@@ -49,6 +49,7 @@ class _SignFormState extends State<SignForm> {
             ],
           ),
           FormError(errors: errors),
+          ResetPasswordText(),
           SizedBox(height: getScreenHeight(20)),
           DefaultButton(
             text: "Continue",
@@ -56,7 +57,7 @@ class _SignFormState extends State<SignForm> {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 print("sign in");
-                Navigator.pushNamed(context, SignUp.routeName);
+                // Navigator.pushNamed(context, SignUp.routeName);
               }
             },
           ),
@@ -124,6 +125,32 @@ class _SignFormState extends State<SignForm> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
+    );
+  }
+}
+
+class ResetPasswordText extends StatelessWidget {
+  const ResetPasswordText({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Forgot your password? ",
+          style: TextStyle(fontSize: getScreenWidth(14)),
+        ),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, ResetPassword.routeName),
+          child: Text(
+            "Reset password",
+            style: TextStyle(fontSize: getScreenWidth(14), color: PrimaryColor),
+          ),
+        ),
+      ],
     );
   }
 }
