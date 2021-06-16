@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:mobile_app/config/constants.dart';
 import 'package:mobile_app/config/size.dart';
 import 'package:mobile_app/components/form_error.dart';
@@ -14,6 +15,7 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
   String firstName;
+  String lastName;
   String email;
   String password;
   String conformPassword;
@@ -43,13 +45,15 @@ class _SignUpFormState extends State<SignUpForm> {
         children: [
           buildFirstNameFormField(),
           SizedBox(height: getScreenHeight(25)),
+          buildLastNameFormField(),
+          SizedBox(height: getScreenHeight(25)),
           buildEmailFormField(),
           SizedBox(height: getScreenHeight(25)),
           buildPasswordFormField(),
           SizedBox(height: getScreenHeight(25)),
           buildConformPassFormField(),
           FormError(errors: errors),
-          SizedBox(height: getScreenHeight(30)),
+          SizedBox(height: getScreenHeight(20)),
           DefaultButton(
             text: "Continue",
             press: () {
@@ -60,6 +64,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 print(email);
                 print(password);
                 print(conformPassword);
+                registerUserRequest(firstName, lastName, email, password);
               }
             },
           ),
@@ -184,5 +189,56 @@ class _SignUpFormState extends State<SignUpForm> {
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
       ),
     );
+  }
+
+  TextFormField buildLastNameFormField() {
+    return TextFormField(
+      onSaved: (newValue) => lastName = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          removeError(error: "Please Enter your name");
+        }
+        return null;
+      },
+      validator: (value) {
+        if (value.isEmpty) {
+          addError(error: "Please Enter your name");
+          return "";
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: "Last Name",
+        hintText: "Enter your last name",
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
+      ),
+    );
+  }
+
+  registerUserRequest(firstName, lastName, email, password) async {
+    var url = "http://10.0.2.2:8080/users/register";
+
+    var request = http.Request('POST', Uri.parse(url));
+    request.body = jsonEncode(<String, String>{
+      'name': firstName,
+      'lastname': lastName,
+      'email': email,
+      'password': password
+    });
+    request.headers.addAll(
+      <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      isRegister = true;
+      // Navigator.pushNamed(context, .routeName);
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 }

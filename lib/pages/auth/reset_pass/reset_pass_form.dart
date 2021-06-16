@@ -5,6 +5,7 @@ import 'package:mobile_app/config/size.dart';
 import 'package:mobile_app/components/form_error.dart';
 import 'package:mobile_app/components/default_button.dart';
 import 'package:mobile_app/components/custom_surfix_icon.dart';
+import 'package:http/http.dart' as http;
 
 class ResetPasswordForm extends StatefulWidget {
   @override
@@ -56,6 +57,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 print(email);
                 print(password);
                 print(conformPassword);
+                ForgotPasswordRequest(email);
               }
             },
           ),
@@ -93,5 +95,25 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
     );
+  }
+
+  ForgotPasswordRequest(email) async {
+    var url = "http://localhost:8080/user/forgot/" + email;
+
+    var request = http.Request('GET', Uri.parse(url));
+
+    request.headers.addAll(
+      <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Resetted password");
+    } else {
+      print(response.reasonPhrase);
+    }
   }
 }

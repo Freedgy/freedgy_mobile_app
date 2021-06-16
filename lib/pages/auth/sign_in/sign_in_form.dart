@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:mobile_app/config/size.dart';
 import 'package:mobile_app/config/constants.dart';
 import 'package:mobile_app/components/form_error.dart';
@@ -17,6 +19,7 @@ class _SignFormState extends State<SignForm> {
   String email;
   String password;
   bool remember = false;
+  bool connected = false;
   final List<String> errors = [];
 
   void addError({String error}) {
@@ -57,7 +60,7 @@ class _SignFormState extends State<SignForm> {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 print("sign in");
-                // Navigator.pushNamed(context, SignUp.routeName);
+                loginUserRequest(email, password);
               }
             },
           ),
@@ -126,6 +129,29 @@ class _SignFormState extends State<SignForm> {
         suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Mail.svg"),
       ),
     );
+  }
+
+  loginUserRequest(email, password) async {
+    var url = "http://10.0.2.2:8080/users/login";
+
+    var request = http.Request('POST', Uri.parse(url));
+    request.body =
+        jsonEncode(<String, String>{'email': email, 'password': password});
+    request.headers.addAll(
+      <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      connected = true;
+      // Navigator.pushNamed(context, .routeName);
+    } else {
+      print(response.reasonPhrase);
+      addError(error: "Please Enter Valid Email");
+    }
   }
 }
 
