@@ -6,6 +6,7 @@ import 'package:mobile_app/config/size.dart';
 import 'package:mobile_app/components/form_error.dart';
 import 'package:mobile_app/components/default_button.dart';
 import 'package:mobile_app/components/custom_surfix_icon.dart';
+import 'package:mobile_app/pages/auth/email_confirmation.dart';
 
 class SignUpForm extends StatefulWidget {
   @override
@@ -111,7 +112,7 @@ class _SignUpFormState extends State<SignUpForm> {
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: "Please Enter your password");
-        } else if (value.length >= 8) {
+        } else if (value.length >= 4) {
           removeError(error: "Password is too short");
         }
         password = value;
@@ -120,7 +121,7 @@ class _SignUpFormState extends State<SignUpForm> {
         if (value.isEmpty) {
           addError(error: "Please Enter your password");
           return "";
-        } else if (value.length < 8) {
+        } else if (value.length < 4) {
           addError(error: "Password is too short");
           return "";
         }
@@ -217,12 +218,12 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   registerUserRequest(firstName, lastName, email, password) async {
-    var url = "http://10.0.2.2:8080/users/register";
+    var url = "http://back.freedgy.com:8080/user/register";
 
     var request = http.Request('POST', Uri.parse(url));
     request.body = jsonEncode(<String, String>{
       'name': firstName,
-      'lastname': lastName,
+      'last_name': lastName,
       'email': email,
       'password': password
     });
@@ -236,7 +237,9 @@ class _SignUpFormState extends State<SignUpForm> {
 
     if (response.statusCode == 200) {
       isRegister = true;
-      // Navigator.pushNamed(context, .routeName);
+      print(response);
+      print("done");
+      Navigator.pushNamed(context, EmailConfirmation.routeName);
     } else {
       print(response.reasonPhrase);
     }

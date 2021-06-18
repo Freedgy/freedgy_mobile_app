@@ -8,6 +8,7 @@ import 'package:mobile_app/components/form_error.dart';
 import 'package:mobile_app/components/default_button.dart';
 import 'package:mobile_app/components/custom_surfix_icon.dart';
 import 'package:mobile_app/pages/auth/reset_pass/reset_pass.dart';
+import 'package:mobile_app/pages/home.dart';
 
 class SignForm extends StatefulWidget {
   @override
@@ -85,7 +86,7 @@ class _SignFormState extends State<SignForm> {
         if (value.isEmpty) {
           addError(error: "Please Enter your password");
           return "";
-        } else if (value.length < 8) {
+        } else if (value.length < 4) {
           addError(error: "Password is too short");
           return "";
         }
@@ -132,7 +133,8 @@ class _SignFormState extends State<SignForm> {
   }
 
   loginUserRequest(email, password) async {
-    var url = "http://10.0.2.2:8080/users/login";
+    print("LOGIN");
+    var url = "http://back.freedgy.com:8080/user/login";
 
     var request = http.Request('POST', Uri.parse(url));
     request.body =
@@ -142,12 +144,15 @@ class _SignFormState extends State<SignForm> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
+    print(request);
+    print(request.body);
     final response = await request.send();
 
     if (response.statusCode == 200) {
       connected = true;
-      // Navigator.pushNamed(context, .routeName);
+      print(response);
+      print("done");
+      Navigator.pushNamed(context, Home.routeName);
     } else {
       print(response.reasonPhrase);
       addError(error: "Please Enter Valid Email");

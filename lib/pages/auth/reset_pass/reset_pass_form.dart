@@ -6,6 +6,7 @@ import 'package:mobile_app/components/form_error.dart';
 import 'package:mobile_app/components/default_button.dart';
 import 'package:mobile_app/components/custom_surfix_icon.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/pages/auth/reset_pass/confirmation.dart';
 
 class ResetPasswordForm extends StatefulWidget {
   @override
@@ -57,7 +58,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 print(email);
                 print(password);
                 print(conformPassword);
-                ForgotPasswordRequest(email);
+                forgotPasswordRequest(email);
               }
             },
           ),
@@ -97,8 +98,8 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
     );
   }
 
-  ForgotPasswordRequest(email) async {
-    var url = "http://localhost:8080/user/forgot/" + email;
+  forgotPasswordRequest(email) async {
+    var url = "http://back.freedgy.com:8080/user/forgot/" + email;
 
     var request = http.Request('GET', Uri.parse(url));
 
@@ -111,7 +112,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
     final response = await request.send();
 
     if (response.statusCode == 200) {
-      print("Resetted password");
+      Navigator.pushNamed(context, PasswordConfirmation.routeName);
     } else {
       print(response.reasonPhrase);
     }
